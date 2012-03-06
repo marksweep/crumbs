@@ -1,0 +1,10 @@
+name: Crumbs
+description: Crumbs plugin system
+
+author: David Wu
+authorEmail: david@marksweep.com
+authorUrl: http://http://www.ipro.org/index/eservices
+
+dependencies:
+  plugins:
+    - extensions

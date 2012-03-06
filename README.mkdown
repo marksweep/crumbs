@@ -1,0 +1,114 @@
+Crumbs
+=====
+
+Crumbs is a Croogo 1.3 plugin (currently) that generates hierarchical node information and makes it available to the view. It comes with a built-in element to render breadcrumbs trails and a sidebar submenu. 
+
+Breadcrumbs are hierarchical breadcrumbs not historical (for now). Your node pages must be linked by parent_id to generate this breadcrumb. 
+
+Subnav shows you the complete subnavigation from the node. From any leaf in your hierarchy of pages, subnav will traverse to the root of your leaf and then recurse down from that root building out the whole tree. Items above you in the tree as direct parents are marked with a class="parent" and nodes below you in the tree are marked with a class="child". The node you are looking at is marked with class="current".
+
+Installation
+--------------
+Copy the crumbs directory into your app/plugins directory.
+
+Activate revisions using the Croogo Plug-ins admin section.
+
+### Usage ###
+
+To include the breadcrumbs, you can create a new block and include the breadcrumbs element in the body of the block
+
+	[e:breadcrumbs plugin="crumbs"]
+
+Alternatively, you can directly include the breadcrumbs element in your views - for example adding it to layouts/default.ctp 
+
+	<?php echo $this->element('breadcrumbs', array('plugin' => 'crumbs')); ?>
+
+There are two variables that you can currently pass to the element to configure the way the breadcrumbs work. 
+
+	[e:breadcrumbs plugin="crumbs" homeLinkTitle="Home"]
+
+Will set the root link to the word "Home" in all cases (this is the default). The root link always points back to "/" on the server.
+
+	[e:breadcrumbs plugin="crumbs" separator=":"]
+
+This will change the separator between breadcrumbs to the *:* character. This is set to */* by default
+
+There is another element you can include called *subnav*. This element is used to create a hierarchical submenu of items starting from the root parent of your current node. For example, suppose you have this structure of linked node pages.
+
+* About
+	* Taco
+		* Bell
+		* Commander
+	* Happy
+		* Joy 1
+		* Joy 2
+* Contact
+	* Form
+	* Email
+		* Secure
+
+
+If you are on the "Taco" node - subnav will show these items
+
+* About (parent)
+	* Taco (current)
+		* Bell (child)
+		* Commander (child)
+	* Happy
+		* Joy 1
+		* Joy 2
+
+Since you are on the "Taco" node - the link generated gets a special CSS class called *current*. All direct parents of "Taco" (in this case "About") gets tagged with the css class *parent*. All children or grandchildren of "Taco" are tagged with the css class *child*. 
+
+To add this subnav element to your pages you can embed the element into a block (create a block and put this into the body)
+
+	[e:subnav plugin="crumbs"]
+
+Or directly include it into you view code (put it into layouts/default.ctp for example)
+
+	<?php echo $this->element('subnav', array('plugin' => 'crumbs')); ?>
+
+### Styling the Subnav ###
+You can do a few neat tricks with the style on the subnav using CSS. 
+
+	.subnav li a.current {
+		font-weight: bold;
+	}
+
+Makes the current node in the subnav **bold**.
+
+	.subnav li a {
+		display: none;
+	}
+
+	.subnav li a.current, .subnav li a.parent, .subnav li a.child {
+		display: block;
+	}
+
+This hides all the link and then displays only subnav items in the direct parent/child tree of the current node.
+
+For more fun, if you know Javascript you can add dynamic actions to the subnav.
+
+	/* jQuery example */
+	$(".subnav li").mouseover(function() {
+		$(this).find("ul a").show();
+	});
+
+This snippet will show all hidden children links as soon as you mouseover an item (assuming that are already hidden).
+
+### For Developers ###
+
+The crumbs plugin uses a component and a behavior to build data structures for the view.  The component sets three view variables 
+
+* **$breadcrumbs** - array of node information in reverse depth order (current node is at end of array)
+* **$subpages** - multi-dimensional array of the node structure. This array starts from the highest parent from the current node and goes down to all children of that parent - this will include all sibling branches at that root level so it can get quite large depending on the size of the root's tree.
+* **$treelist** - array of formatted text. This is in the format that Cake's generateTreeList() behavior method returns.
+
+Crumbs makes use of caching to minimize loads on the page. Turn on your caching in core.php to make things speedier. Node deletion or updates will invalidate the crumbs cache for that node only. Each node gets its own cache file so this can cause problems if the tree structure is modified in an adjacent node. If the nodes are changed appreciable in terms of parent_ids being constantly changed you may want to clear the CakePHP cache explicitly each time.
+
+### Future Enhancements ###
+
+* Make cache clearing smarter in the behavior. When a node is updated or deleted, clear all the caches for anyone in that node's parent's descending tree.
+
+* Add sibling class to the subnav so that siblings of the current node are tagged.
+
