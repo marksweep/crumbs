@@ -39,7 +39,7 @@ class CrumbsComponent extends Object {
     		// Are the crumbs cached?
     		$cache_identifier = 'crumbs_node_' . $p['Node']['id'];
     		if (($crumbs = Cache::read($cache_identifier)) === false){
-    		
+    
 	    		$breadcrumbs 	= array($p);
 	    		while ($parent = $controller->Node->getparentnode($p['Node']['id'])) {
 	    			// Build the breadcrumbs
@@ -54,7 +54,7 @@ class CrumbsComponent extends Object {
 	       		}
 	       		
 	       		// Recurse down and find all my subpages
-				$subpages = array(array('child' => $p, 'children' => $this->recurseSubpages($controller, $p)));	
+				$subpages = array(array('child' => $p, 'children' => self::recurseSubpages($controller->Node, $p)));	
 				$treelist = $controller->Node->generatetreelist();
 			
 				// Cache these items into our crumbs array
@@ -81,17 +81,17 @@ class CrumbsComponent extends Object {
      * @param mixed $node
      * @return void
      */
-    public function recurseSubpages(&$controller, $node) {
-    
+    public static function recurseSubpages(&$Node, $node) {
+
     	if (!isset($node['Node']['id'])) {
     		return false;
     	}
     	
     	// Find the children of this node
-    	$children = $controller->Node->children($node['Node']['id'], true, array('id', 'path', 'parent_id', 'title', 'slug'));
+    	$children = $Node->children($node['Node']['id'], true, array('id', 'path', 'parent_id', 'title', 'slug'));
     	$all = array();
     	foreach ($children as $child) {
-    		$leaf = array('child'=>$child, 'children' => $this->recurseSubpages(&$controller, $child));
+    		$leaf = array('child'=>$child, 'children' => self::recurseSubpages(&$Node, $child));
     		$all[] = $leaf;
     	}
     	

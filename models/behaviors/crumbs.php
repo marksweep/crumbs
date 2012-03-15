@@ -11,10 +11,13 @@
  * @license  http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link     http://github.com/marksweep/revisions
  */
+ App::import('component', 'Crumbs');
  
 class CrumbsBehavior extends ModelBehavior {
 
 	public $attach = false;
+	
+	protected $currentModel;
 	
 	/**
 	 * Setup
@@ -27,7 +30,7 @@ class CrumbsBehavior extends ModelBehavior {
         if (is_string($config)) {
             $config = array($config);
         }
-
+		$this->currentModel = $model;
         $this->settings[$model->alias] = $config;
     }
     
@@ -36,11 +39,22 @@ class CrumbsBehavior extends ModelBehavior {
     	if ($model->id) {
     	
     		// Delete crumbs cache for this model
-    		$cache_identifier = 'crumbs_node_' . $model_id;
-    		Cache::delete($cache_identifier);
+    		// We will traverse the tree to make sure
+    		// everthing is cached out
+    		$this->deleteCacheTree($model);
     	    	
     	}
     	
+    	return true;
+    }
+    
+    public function afterSave($created) {
+    
+    	// Delete crumbs cache for this model 
+    	// We do this again because we might have a new parent
+    	// that needs to be flushed
+    	$this->deleteCacheTree();
+    
     	return true;
     }
     
@@ -49,15 +63,34 @@ class CrumbsBehavior extends ModelBehavior {
     	if ($model->id) {
     		
     		// Delete crumbs cache for this model
-    		$cache_identifier = 'crumbs_node_' . $model_id;
-    		Cache::delete($cache_identifier);
+    		$this->deleteCacheTree($model);
     	    	
     	}
     	
     	return true;
     }
    
+    public function deleteCacheTree($model = null) {
     
+    	if (!$model) {
+    		$model = $this->currentModel;
+    	}
+    	$p = $model->data;
+		while ($parent = $model->getparentnode($p['Node']['id'])) {
+			// Build the breadcrumbs
+			if (isset($p['Node']['id']) && $p['Node']['id'] == $parent['Node']['id']) {
+				break;
+			}
+			$p = $parent;
+		}
+		$subpages = $model->children($p['Node']['id']);
+		
+		foreach ($subpages as $child) {
+			$model_id = $child['Node']['id'];
+    		$cache_identifier = 'crumbs_node_' . $model_id;
+    		Cache::delete($cache_identifier);
+    	}
+    }
 
 }
 ?>
