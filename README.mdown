@@ -104,11 +104,11 @@ The crumbs plugin uses a component and a behavior to build data structures for t
 * **$subpages** - multi-dimensional array of the node structure. This array starts from the highest parent from the current node and goes down to all children of that parent - this will include all sibling branches at that root level so it can get quite large depending on the size of the root's tree.
 * **$treelist** - array of formatted text. This is in the format that Cake's generateTreeList() behavior method returns.
 
-Crumbs makes use of caching to minimize loads on the page. Turn on your caching in core.php to make things speedier. Node deletion or updates will invalidate the crumbs cache for that node only. Each node gets its own cache file so this can cause problems if the tree structure is modified in an adjacent node. If the nodes are changed appreciable in terms of parent_ids being constantly changed you may want to clear the CakePHP cache explicitly each time.
+Crumbs makes use of caching to minimize loads on the page. Turn on your caching in core.php to make things speedier. Node deletion or updates will invalidate all the crumbs in a parent sub tree. If you change the parent on a node it will invalidate the cache on the old parent tree and the new parent tree.
 
 ### Future Enhancements ###
 
-* Make cache clearing smarter in the behavior. When a node is updated or deleted, clear all the caches for anyone in that node's parent's descending tree.
+* Make cache clearing smarter in the behavior. When a node is updated or deleted, clear all the caches for anyone in that node's parent's descending tree. [DONE]
 
 * Add sibling class to the subnav so that siblings of the current node are tagged.
 
