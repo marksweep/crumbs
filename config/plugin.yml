@@ -1,9 +1,9 @@
 name: Crumbs
-description: Crumbs plugin system
+description: Crumbs plugin system that generates hierarchical node information and makes it available to the view
 
-author: Author Name
-authorEmail: author@Revisions.com
-authorUrl: http://Revisions.com
+author: Mark Sweep
+authorEmail: 
+authorUrl: https://github.com/marksweep
 
 dependencies:
   plugins:
