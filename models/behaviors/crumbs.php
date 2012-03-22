@@ -76,20 +76,22 @@ class CrumbsBehavior extends ModelBehavior {
     		$model = $this->currentModel;
     	}
     	$p = $model->data;
-		while ($parent = $model->getparentnode($p['Node']['id'])) {
-			// Build the breadcrumbs
-			if (isset($p['Node']['id']) && $p['Node']['id'] == $parent['Node']['id']) {
-				break;
+    	if (isset($p['Node']['id'])) {
+			while ($parent = $model->getparentnode($p['Node']['id'])) {
+				// Build the breadcrumbs
+				if (isset($p['Node']['id']) && $p['Node']['id'] == $parent['Node']['id']) {
+					break;
+				}
+				$p = $parent;
 			}
-			$p = $parent;
-		}
-		$subpages = $model->children($p['Node']['id']);
-		
-		foreach ($subpages as $child) {
-			$model_id = $child['Node']['id'];
-    		$cache_identifier = 'crumbs_node_' . $model_id;
-    		Cache::delete($cache_identifier);
-    	}
+			$subpages = $model->children($p['Node']['id']);
+			
+			foreach ($subpages as $child) {
+				$model_id = $child['Node']['id'];
+	    		$cache_identifier = 'crumbs_node_' . $model_id;
+	    		Cache::delete($cache_identifier);
+	    	}
+	    }
     }
 
 }
