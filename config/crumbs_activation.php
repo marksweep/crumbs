@@ -5,9 +5,9 @@
  * Activation class for Crumbs plugin.
  *
  * @package  Croogo
- * @author   Thomas Rader <thomas.rader@tigerclawtech.com>
+ * @author   David Wu <david@marksweep.com>
  * @license  http://www.opensource.org/licenses/mit-license.php The MIT License
- * @link     http://www.tigerclawtech.com/portfolio/croogo-Crumbs-plugin
+ * @link     http://github.com/marksweep/crumbs
  */
 class CrumbsActivation{
 

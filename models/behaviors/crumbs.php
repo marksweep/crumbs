@@ -9,7 +9,7 @@
  * @version  1.0
  * @author   David Wu <david@marksweep.com>
  * @license  http://www.opensource.org/licenses/mit-license.php The MIT License
- * @link     http://github.com/marksweep/revisions
+ * @link     http://github.com/marksweep/crumbs
  */
  App::import('component', 'Crumbs');
  
