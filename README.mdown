@@ -1,7 +1,7 @@
 Crumbs
 =====
 
-Crumbs is a Croogo 1.3 plugin (currently) that generates hierarchical node information and makes it available to the view. It comes with a built-in element to render breadcrumbs trails and a sidebar submenu. 
+Crumbs is a Croogo 1.3 plugin (currently) that generates hierarchical node information and makes it available to the view. It comes with a built-in element to render breadcrumbs trails and a sidebar submenu. It may actually work with 1.4 but this has not been tested. It consists of a component and a behavior that hooks into Node and some pre-built elements to work with.
 
 Breadcrumbs are hierarchical breadcrumbs not historical (for now). Your node pages must be linked by parent_id to generate this breadcrumb. 
 
